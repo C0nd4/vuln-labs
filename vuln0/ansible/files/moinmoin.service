@@ -1,0 +1,13 @@
+[Unit]
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=conda
+ExecStart=/opt/moin-1.9.5/wikiserver.py
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,42 @@
+---
+- name: "Provision vuln0"
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Set hostname
+    hostname:
+      name: vuln0
+
+  - name: Download MoinMoin
+    get_url:
+      url: https://www.exploit-db.com/apps/adfa15e3e37cf26b4b014f209959e9d9-moin-1.9.5.tar.gz
+      dest: /opt/moin-1.9.5.tar.gz
+
+  - name: Unpack MoinMoin source
+    shell:
+      cmd: cd /opt/ && gunzip moin-1.9.5.tar.gz
+
+  - name: Unpack MoinMoin source
+    shell:
+      cmd: cd /opt/ && tar xvf moin-1.9.5.tar
+
+  - name: Run MoinMoin setup
+    shell:
+      cmd: cd /opt/moin-1.9.5 && python setup.py install
+
+  - name: Make MoinMoin listen on all interfaces
+    replace:
+      path: /opt/moin-1.9.5/wikiserverconfig.py
+      regexp: 'localhost'
+      replace: ""
+
+  - name: Copy MoinMoin service
+    copy:
+        src: moinmoin.service
+        dest: /etc/systemd/system/moinmoin.service
+
+  - name: Start MoinMoin
+    systemd:
+      state: started
+      name: moinmoin.service
