@@ -40,3 +40,4 @@
     systemd:
       state: started
       name: moinmoin.service
+      enabled: yes

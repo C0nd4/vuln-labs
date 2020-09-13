@@ -24,5 +24,12 @@
     "output_directory": "vuln0",
     "shutdown_command": "sudo /sbin/halt -p",
     "http_directory": "http"
-    }]
+    }],
+  "provisioners": [
+      {
+        "type": "ansible-local",
+        "playbook_dir": "ansible",
+        "playbook_file": "ansible/main.yml"
+      }
+    ]
 } 
