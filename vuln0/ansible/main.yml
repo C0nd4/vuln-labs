@@ -41,3 +41,25 @@
       state: started
       name: moinmoin.service
       enabled: yes
+
+  - name: Add MoinMoin CronJob
+    cron:
+      name: "Restart MoinMoin Service"
+      job: "systemctl restart moinmoin.service"
+
+  - name: Copy Path_Checker
+    copy:
+        src: path_checker.sh
+        dest: /root/
+        mode: '0755'
+
+  - name: Change file ownership, group and permissions
+    file:
+      path: /usr/local/bin
+      state: directory
+      mode: '0777'
+
+  - name: Add Path Checker CronJob
+    cron:
+      name: "Check Path Checker"
+      job: "/root/path_checker.sh"      
