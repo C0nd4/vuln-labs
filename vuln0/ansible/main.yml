@@ -8,6 +8,11 @@
     hostname:
       name: vuln0
 
+  - name: Install the latest version of Apache
+    yum:
+      name: httpd
+      state: latest
+
   - name: Download MoinMoin
     get_url:
       url: https://www.exploit-db.com/apps/adfa15e3e37cf26b4b014f209959e9d9-moin-1.9.5.tar.gz
@@ -42,18 +47,24 @@
       name: moinmoin.service
       enabled: yes
 
+  - name: Start Apache
+    systemd:
+      state: started
+      name: httpd
+      enabled: yes
+
+  - name: Copy index file
+    copy:
+        src: index.html
+        dest: /var/www/html
+
   - name: Add MoinMoin CronJob
     cron:
       name: "Restart MoinMoin Service"
       job: "systemctl restart moinmoin.service"
+      minute: "*/5"
 
-  - name: Copy Path_Checker
-    copy:
-        src: path_checker.sh
-        dest: /root/
-        mode: '0755'
-
-  - name: Change file ownership, group and permissions
+  - name: Change directory permissions
     file:
       path: /usr/local/bin
       state: directory
@@ -62,4 +73,24 @@
   - name: Add Path Checker CronJob
     cron:
       name: "Check Path Checker"
-      job: "/root/path_checker.sh"      
+      job: "PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/conda/.local/bin:/home/conda/bin:/root/bin cat $PATH"
+      user: root
+      cron_file: path_checker
+
+  - name: Remove the user "conda" from the wheel group
+    user:
+      name: conda
+      groups: conda
+      append: no
+
+  - name: Change conda password
+    user:
+      name: conda
+      update_password: always
+      password: '!'
+
+  - name: Remove sudo access from conda
+    lineinfile:
+      path: /etc/sudoers
+      regexp: '^conda'
+      line: 'conda ALL= NOPASSWD: /sbin/halt' 
