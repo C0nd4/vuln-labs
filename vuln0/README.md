@@ -1,3 +1,6 @@
+## Difficulty
+Medium
+
 ## Authors
 - [Brandon Rossi](https://twitter.com/0xConda)
 - [Eugene Mar](https://twitter.com/_EugeneMar_)
