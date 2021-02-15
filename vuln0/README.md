@@ -1,6 +1,3 @@
-## OVF Download
-If you don't want to build the box, download the OVF from [here](https://pentestlife.com/vuln-labs/#vuln0).
-
 ## Difficulty
 Medium
 
